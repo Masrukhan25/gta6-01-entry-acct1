@@ -1,0 +1,65 @@
+<!doctype html>
+<!-- Tidebreak's local shell: every asset and module ships in this repository. -->
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#102b35">
+<title>Tidebreak — Maravela</title><link rel="stylesheet" href="./src/ui/shell.css">
+<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
+</head>
+<body><main class="game-shell" aria-label="Tidebreak in Maravela">
+<canvas id="scene" tabindex="0" aria-label="Maravela city"></canvas>
+<div class="vignette" aria-hidden="true"></div><div id="damage-flash" aria-hidden="true"></div>
+<div id="loading" role="status" hidden>Loading Maravela…</div>
+<section class="title-card" aria-labelledby="game-title">
+<p class="eyebrow">A coastal city of second chances</p><h1 id="game-title">TIDEBREAK</h1><p class="city-name">MARAVELA</p>
+<p class="intro">Every street holds a story. Follow the salt air into yours.</p>
+<div class="title-actions"><button id="enter-city">NEW GAME</button><button id="continue-city" disabled>CONTINUE</button><button id="title-settings">SETTINGS</button><button id="title-help">HELP</button></div>
+<p id="status" role="status">The sea breeze carries a new beginning.</p>
+</section>
+<section id="game-hud" class="game-hud" hidden aria-label="City information">
+<div class="district-card"><span class="hud-kicker">MARAVELA DISTRICT</span><strong id="district-label">Boardwalk</strong><span id="player-coordinates">−174, 0</span></div>
+<div class="wealth-card"><strong id="cash-label">$0</strong><span id="respect-label">Respect 0 · Rank 1</span><span id="wanted-stars" aria-label="Wanted level 0 of 5">☆☆☆☆☆</span></div>
+<div id="objective-tracker" hidden><span class="hud-kicker">CURRENT OBJECTIVE</span><strong id="objective-title"></strong><p id="objective-text"></p><span id="objective-progress"></span></div>
+<div class="vitals"><label>HEALTH</label><div id="health-bar" role="progressbar" aria-label="Health" aria-valuemin="0" aria-valuemax="100"><div id="health-fill"></div></div><label>ARMOR</label><div id="armor-bar" role="progressbar" aria-label="Armor" aria-valuemin="0" aria-valuemax="100"><div id="armor-fill"></div></div><p id="movement-status">On foot</p></div>
+<canvas id="minimap" width="208" height="208" aria-label="City minimap"></canvas>
+<div id="vehicle-panel" hidden><strong id="speed-label">0 km/h</strong><span id="damage-label">Condition 100%</span><span id="nitro-label">Nitro 100%</span></div>
+<p id="radio-ticker">Radio · C to tune</p>
+<ul id="weapon-wheel" aria-label="Weapons and ammunition">
+<li aria-current="true"><kbd>1</kbd><span>Beacon Nine</span><strong>96</strong></li>
+<li><kbd>2</kbd><span>Breakwater Scatter</span><strong>32</strong></li>
+<li><kbd>3</kbd><span>Saltline Repeater</span><strong>150</strong></li>
+</ul>
+<div class="hud-actions"><button id="controls-toggle" aria-expanded="false">Help · H</button><button id="day-toggle" aria-pressed="false">Night · N</button><button id="rain-toggle" aria-pressed="false">Rain · R</button><button id="cycle-toggle" aria-pressed="true">Cycle: on</button><button id="phone-toggle">Phone · P</button><button id="pause-toggle">Pause · Esc</button>
+<label class="time-control" for="time-of-day">TIME <input id="time-of-day" type="range" min="0" max="24" step="0.1" value="17"><output id="time-output">17:00</output></label></div>
+</section>
+<section id="controls-panel" class="panel controls-panel" hidden aria-labelledby="controls-title">
+<div class="panel-heading"><h2 id="controls-title">FIELD GUIDE</h2><button id="close-controls" aria-label="Close controls">×</button></div>
+<p>Drag to look · Click to fire · E interact / enter · Shift sprint / nitro · Q horn · Space jump / handbrake. Select a key to remap.</p>
+<div class="control-grid">
+<span>Move forward</span><button data-bind="forward"></button>
+<span>Move back</span><button data-bind="backward"></button>
+<span>Move left</span><button data-bind="left"></button>
+<span>Move right</span><button data-bind="right"></button>
+<span>Sprint / nitro</span><button data-bind="sprint"></button>
+<span>Jump</span><button data-bind="jump"></button>
+<span>Vault</span><button data-bind="vault"></button>
+<span>Interact</span><button data-bind="interact"></button>
+<span>Horn</span><button data-bind="horn"></button>
+<span>Handbrake</span><button data-bind="handbrake"></button>
+<span>Help</span><button data-bind="help"></button>
+<span>Rain</span><button data-bind="rain"></button>
+<span>Day / night</span><button data-bind="time"></button>
+<span>Pause</span><button data-bind="pause"></button>
+<span>Phone</span><button data-bind="phone"></button>
+<span>Next station</span><button data-bind="radioNext"></button>
+<span>Beacon Nine</span><button data-bind="weapon1"></button>
+<span>Breakwater Scatter</span><button data-bind="weapon2"></button>
+<span>Saltline Repeater</span><button data-bind="weapon3"></button>
+</div></section>
+<section id="phone-overlay" class="panel phone" hidden aria-label="Maravela phone"><div class="panel-heading"><h2>MARAVELA / CONNECT</h2><button id="phone-close" aria-label="Close phone">×</button></div><nav id="phone-tabs" aria-label="Phone tabs"></nav><canvas id="phone-map" width="520" height="520" aria-label="Full city map"></canvas><div id="phone-content"></div></section>
+<section id="pause-menu" class="panel pause" hidden aria-label="Paused"><p class="eyebrow">MARAVELA</p><h2>TAKE A BREATHER</h2><button id="pause-resume">RESUME</button><button id="pause-settings">SETTINGS</button><button id="pause-quit">SAVE &amp; QUIT TO TITLE</button></section>
+<section id="settings-panel" class="panel settings" hidden aria-label="Settings"><div class="panel-heading"><h2>SETTINGS</h2><button id="settings-close" aria-label="Close settings">×</button></div>
+<label>Master volume <input id="master-volume" type="range" min="0" max="1" step=".01" value=".55"></label>
+<label>Quality <select id="quality"><option value="low">Low</option><option value="med" selected>Medium</option><option value="high">High</option></select></label>
+<label>Mouse sensitivity <input id="mouse-sensitivity" type="range" min=".2" max="2" step=".1" value="1"></label><button id="reset-controls">RESET CONTROLS</button></section>
+</main><script type="module" src="./src/main.js"></script></body></html>
